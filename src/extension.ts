@@ -23,12 +23,11 @@ export function activate(context: vscode.ExtensionContext) {
 			vscode.ViewColumn.One,
 			{
 				enableScripts: true,
-				localResourceRoots: [vscode.Uri.joinPath(context.extensionUri, 'resource')]
+				localResourceRoots: [vscode.Uri.joinPath(context.extensionUri, 'frontend', 'dist')]
 			}
 		);
 
-		const threejsPath = panel.webview.asWebviewUri(vscode.Uri.joinPath(context.extensionUri, 'resource', 'three.module.js'));
-		const mainPath = panel.webview.asWebviewUri(vscode.Uri.joinPath(context.extensionUri, 'resource', 'main.js'));
+		const mainPath = panel.webview.asWebviewUri(vscode.Uri.joinPath(context.extensionUri, 'frontend', 'dist', 'main.js'));
 		const shader = vscode.window.activeTextEditor?.document.getText();
 
 		panel.webview.html = `
@@ -43,7 +42,6 @@ export function activate(context: vscode.ExtensionContext) {
             margin: 0;
         }
     </style>
-	<script type="importmap"> { "imports": { "three": "${threejsPath}" } } </script>
 </head>
 
 <body>
