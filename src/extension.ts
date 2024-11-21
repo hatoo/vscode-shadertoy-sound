@@ -13,14 +13,49 @@ export function activate(context: vscode.ExtensionContext) {
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
-	const disposable = vscode.commands.registerCommand('shadertoy-sound.helloWorld', () => {
+	const disposable = vscode.commands.registerCommand('shadertoy-sound.helloWorld', async () => {
 		// The code you place here will be executed every time your command is executed
 		// Display a message box to the user
 		vscode.window.showInformationMessage('Hello World from shadertoy-sound!');
+
+		const panel = vscode.window.createWebviewPanel('preview',
+			'preview',
+			vscode.ViewColumn.One,
+			{
+				enableScripts: true,
+				localResourceRoots: [vscode.Uri.joinPath(context.extensionUri, 'resource')]
+			}
+		);
+
+		const threejsPath = panel.webview.asWebviewUri(vscode.Uri.joinPath(context.extensionUri, 'resource', 'three.module.js'));
+		const mainPath = panel.webview.asWebviewUri(vscode.Uri.joinPath(context.extensionUri, 'resource', 'main.js'));
+
+		panel.webview.html = `
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>My first three.js app</title>
+    <style>
+        body {
+            margin: 0;
+        }
+    </style>
+	<script type="importmap"> { "imports": { "three": "${threejsPath}" } } </script>
+</head>
+
+<body>
+<h1>HELLO</h1>
+    <script type="module" src="${mainPath}"></script>
+</body>
+
+</html>
+		`
 	});
 
 	context.subscriptions.push(disposable);
 }
 
 // This method is called when your extension is deactivated
-export function deactivate() {}
+export function deactivate() { }
