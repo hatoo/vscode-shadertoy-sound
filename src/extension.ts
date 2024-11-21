@@ -5,6 +5,7 @@ import * as vscode from 'vscode';
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
+	let currentPanel: vscode.WebviewPanel | undefined = undefined;
 
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
 	// This line of code will only be executed once when your extension is activated
@@ -18,19 +19,30 @@ export function activate(context: vscode.ExtensionContext) {
 		// Display a message box to the user
 		vscode.window.showInformationMessage('Hello World from shadertoy-sound!');
 
-		const panel = vscode.window.createWebviewPanel('preview',
-			'preview',
-			vscode.ViewColumn.One,
-			{
-				enableScripts: true,
-				localResourceRoots: [vscode.Uri.joinPath(context.extensionUri, 'frontend', 'dist')]
-			}
-		);
+		if (currentPanel === undefined) {
+			currentPanel = vscode.window.createWebviewPanel('preview',
+				'preview',
+				vscode.ViewColumn.Two,
+				{
+					enableScripts: true,
+					localResourceRoots: [vscode.Uri.joinPath(context.extensionUri, 'frontend', 'dist')]
+				}
+			);
+			currentPanel.onDidDispose(
+				() => {
+					currentPanel = undefined;
+				},
+				undefined,
+				context.subscriptions
+			);
+		} else {
+			currentPanel.reveal();
+		}
 
-		const mainPath = panel.webview.asWebviewUri(vscode.Uri.joinPath(context.extensionUri, 'frontend', 'dist', 'main.js'));
+		const mainPath = currentPanel.webview.asWebviewUri(vscode.Uri.joinPath(context.extensionUri, 'frontend', 'dist', 'main.js'));
 		const shader = vscode.window.activeTextEditor?.document.getText();
 
-		panel.webview.html = `
+		currentPanel.webview.html = `
 <!DOCTYPE html>
 <html lang="en">
 
@@ -54,6 +66,8 @@ export function activate(context: vscode.ExtensionContext) {
 
 </html>
 		`
+
+		currentPanel.webview.postMessage({ command: 'setShader', shader: shader });
 	});
 
 	context.subscriptions.push(disposable);
