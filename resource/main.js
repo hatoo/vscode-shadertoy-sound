@@ -1,22 +1,9 @@
 import * as THREE from 'three';
 
-const fragmentShader = `
-    #ifdef GL_ES
-    precision mediump float;
-    #endif
-
-    #define PI 3.141592653589793
-    #define TAU 6.283185307179586
+const fragmentShaderFooter = `
 
     uniform float iSampleRate;
     uniform float blockOffset;
-
-    vec2 mainSound(float time){
-        if (time < 0.0) {
-            return vec2(0.5, 1.0);
-        } 
-    return vec2(sin(TAU * 440.0 * time) );
-    }
 
     void main(void) {
     float t = blockOffset + ((gl_FragCoord.x - 0.5  ) + (gl_FragCoord.y - 0.5 ) * 512.0) / iSampleRate;
@@ -63,7 +50,7 @@ const uniforms = {
 
 const material = new THREE.ShaderMaterial({
     uniforms: uniforms,
-    fragmentShader: fragmentShader,
+    fragmentShader: document.getElementById('fragmentShader').textContent + fragmentShaderFooter // fragmentShader,
 });
 const mesh = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material);
 scene.add(mesh);
@@ -85,10 +72,6 @@ for (let i = 0; i < numBlocks; i++) {
     for (let j = 0; j < samples; j++) {
         outputDataL[i * samples + j] = (pixels[j * 4 + 0] + 256 * pixels[j * 4 + 1]) / 65535 * 2 - 1
         outputDataR[i * samples + j] = (pixels[j * 4 + 2] + 256 * pixels[j * 4 + 3]) / 65535 * 2 - 1
-    }
-
-    if (i == 0) {
-        console.log(outputDataL[0], outputDataR[0])
     }
 }
 

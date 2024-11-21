@@ -29,6 +29,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 		const threejsPath = panel.webview.asWebviewUri(vscode.Uri.joinPath(context.extensionUri, 'resource', 'three.module.js'));
 		const mainPath = panel.webview.asWebviewUri(vscode.Uri.joinPath(context.extensionUri, 'resource', 'main.js'));
+		const shader = vscode.window.activeTextEditor?.document.getText();
 
 		panel.webview.html = `
 <!DOCTYPE html>
@@ -46,7 +47,10 @@ export function activate(context: vscode.ExtensionContext) {
 </head>
 
 <body>
-<h1>HELLO</h1>
+	<script id="fragmentShader" type="x-shader/x-fragment">
+		${shader}	
+    </script>
+	<h1>HELLO</h1>
     <script type="module" src="${mainPath}"></script>
 </body>
 
