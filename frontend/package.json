@@ -3,7 +3,6 @@
   "version": "0.0.1",
   "type": "module",
   "scripts": {
-    "vscode:prepublish": "npm run compile",
     "compile": "webpack",
     "watch": "tsc -watch -p ./",
     "pretest": "npm run compile && npm run lint",
