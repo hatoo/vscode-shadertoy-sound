@@ -28,21 +28,8 @@ export function activate(context: vscode.ExtensionContext) {
 					localResourceRoots: [vscode.Uri.joinPath(context.extensionUri, 'frontend', 'dist')]
 				}
 			);
-			currentPanel.onDidDispose(
-				() => {
-					currentPanel = undefined;
-				},
-				undefined,
-				context.subscriptions
-			);
-		} else {
-			currentPanel.reveal();
-		}
-
-		const mainPath = currentPanel.webview.asWebviewUri(vscode.Uri.joinPath(context.extensionUri, 'frontend', 'dist', 'main.js'));
-		const shader = vscode.window.activeTextEditor?.document.getText();
-
-		currentPanel.webview.html = `
+			const mainPath = currentPanel.webview.asWebviewUri(vscode.Uri.joinPath(context.extensionUri, 'frontend', 'dist', 'main.js'));
+			currentPanel.webview.html = `
 <!DOCTYPE html>
 <html lang="en">
 
@@ -57,16 +44,22 @@ export function activate(context: vscode.ExtensionContext) {
 </head>
 
 <body>
-	<script id="fragmentShader" type="x-shader/x-fragment">
-		${shader}	
-    </script>
 	<h1>HELLO</h1>
     <script type="module" src="${mainPath}"></script>
 </body>
+</html>`;
+			currentPanel.onDidDispose(
+				() => {
+					currentPanel = undefined;
+				},
+				undefined,
+				context.subscriptions
+			);
+		} else {
+			currentPanel.reveal();
+		}
 
-</html>
-		`
-
+		const shader = vscode.window.activeTextEditor?.document.getText();
 		currentPanel.webview.postMessage({ command: 'setShader', shader: shader });
 	});
 
