@@ -14,8 +14,8 @@
   "contributes": {
     "commands": [
       {
-        "command": "shadertoy-sound.helloWorld",
-        "title": "Hello World from me"
+        "command": "shadertoy-sound.preview",
+        "title": "Shadertoy-sound: Preview"
       }
     ]
   },
