@@ -39,11 +39,6 @@ export function activate(context: vscode.ExtensionContext) {
 </head>
 
 <body>
-	<h1>Sound Preview</h1>
-	<pre id="error"></pre>
-	<input type="range" id="volume" min="0" max="2" value="1" step="any" />
-	<p>volume: <output id="value"></output></p>
-	<button id="play">Play</button>
 	<div id="app"></div>
     <script type="module" src="${mainPath}"></script>
 </body>
