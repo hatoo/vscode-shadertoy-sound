@@ -200,7 +200,7 @@ export default function App() {
             }} />} label="Loop" />
         <Stack spacing={2} direction="row" sx={{ alignItems: 'center', mb: 1 }}>
             <VolumeDown />
-            <Slider aria-label="Volume" min={0.0} max={1.0} step={0.005} valueLabelDisplay="on" value={gainValue} onChange={(e, value) => {
+            <Slider aria-label="Volume" min={0.0} max={1.0} step={0.005} valueLabelDisplay="auto" value={gainValue} onChange={(e, value) => {
                 setGainValue(value as number);
             }} />
             <VolumeUp />
