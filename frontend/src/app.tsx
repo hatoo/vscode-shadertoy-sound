@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Stack, Checkbox, Slider, FormControlLabel, styled, Typography } from '@mui/material';
 import { VolumeDown, VolumeUp } from '@mui/icons-material';
 
-const RealtimeSlider = styled(Slider)(({ theme }) => ({
+const RealtimeSlider = styled(Slider)(() => ({
     "& .MuiSlider-thumb": {
         transition: 'none'
     },
@@ -109,7 +109,7 @@ export default function App() {
             glVertexShader: WebGLShader,
             glFragmentShader: WebGLShader,
         ) => {
-            let info = gl.getShaderInfoLog(glFragmentShader)?.trim() ?? '';
+            const info = gl.getShaderInfoLog(glFragmentShader)?.trim() ?? '';
             console.log(info);
             setError(info);
         };
@@ -120,63 +120,65 @@ export default function App() {
     }, []);
 
     useEffect(() => {
-        const onMessage = (event: MessageEvent<any>) => {
+        const onMessage = (event: MessageEvent<{ command: string; shader?: string }>) => {
             console.log(event.data);
             const message = event.data; // The JSON data our extension sent
             switch (message.command) {
                 case 'setShader':
                     // Codes are heavily inspired from https://design.dena.com/engineering/soundshader
-                    setError('');
-                    const scene = new THREE.Scene();
-                    const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 10);
-                    camera.position.set(0, 0, 1);
-                    camera.lookAt(scene.position);
+                    {
+                        setError('');
+                        const scene = new THREE.Scene();
+                        const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 10);
+                        camera.position.set(0, 0, 1);
+                        camera.lookAt(scene.position);
 
-                    const uniforms = {
-                        iSampleRate: {
-                            type: 'f',
-                            value: audioCtx.sampleRate
-                        },
-                        blockOffset: {
-                            type: 'f',
-                            value: 0
-                        },
-                    };
+                        const uniforms = {
+                            iSampleRate: {
+                                type: 'f',
+                                value: audioCtx.sampleRate
+                            },
+                            blockOffset: {
+                                type: 'f',
+                                value: 0
+                            },
+                        };
 
-                    const material = new THREE.ShaderMaterial({
-                        uniforms: uniforms,
-                        fragmentShader: '#line 1 1\n' + message.shader + fragmentShaderFooter
-                    });
-                    const mesh = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material);
-                    scene.add(mesh);
+                        const material = new THREE.ShaderMaterial({
+                            uniforms: uniforms,
+                            fragmentShader: '#line 1 1\n' + message.shader + fragmentShaderFooter
+                        });
+                        const mesh = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material);
+                        scene.add(mesh);
 
-                    const target = new THREE.WebGLRenderTarget(WIDTH, HEIGHT);
+                        const target = new THREE.WebGLRenderTarget(WIDTH, HEIGHT);
 
-                    const renderCtx = renderer.getContext()
+                        const renderCtx = renderer.getContext()
 
-                    for (let i = 0; i < numBlocks; i++) {
-                        uniforms.blockOffset.value = i * samples / audioCtx.sampleRate
-                        renderer.setRenderTarget(target)
-                        renderer.render(scene, camera)
+                        for (let i = 0; i < numBlocks; i++) {
+                            uniforms.blockOffset.value = i * samples / audioCtx.sampleRate
+                            renderer.setRenderTarget(target)
+                            renderer.render(scene, camera)
 
-                        const pixels = new Uint8Array(WIDTH * HEIGHT * 4)
-                        renderCtx.readPixels(0, 0, WIDTH, HEIGHT, renderCtx.RGBA, renderCtx.UNSIGNED_BYTE, pixels)
+                            const pixels = new Uint8Array(WIDTH * HEIGHT * 4)
+                            renderCtx.readPixels(0, 0, WIDTH, HEIGHT, renderCtx.RGBA, renderCtx.UNSIGNED_BYTE, pixels)
 
-                        const outputDataL = audioBuffer.getChannelData(0)
-                        const outputDataR = audioBuffer.getChannelData(1)
-                        for (let j = 0; j < samples; j++) {
-                            outputDataL[i * samples + j] = (pixels[j * 4 + 0] + 256 * pixels[j * 4 + 1]) / 65535 * 2 - 1
-                            outputDataR[i * samples + j] = (pixels[j * 4 + 2] + 256 * pixels[j * 4 + 3]) / 65535 * 2 - 1
+                            const outputDataL = audioBuffer.getChannelData(0)
+                            const outputDataR = audioBuffer.getChannelData(1)
+                            for (let j = 0; j < samples; j++) {
+                                outputDataL[i * samples + j] = (pixels[j * 4 + 0] + 256 * pixels[j * 4 + 1]) / 65535 * 2 - 1
+                                outputDataR[i * samples + j] = (pixels[j * 4 + 2] + 256 * pixels[j * 4 + 3]) / 65535 * 2 - 1
+                            }
                         }
+
+                        setLoaded(true);
+
+                        if (autoPlay) {
+                            play(start);
+                        }
+
+                        break;
                     }
-
-                    setLoaded(true);
-
-                    if (autoPlay) {
-                        play(start);
-                    }
-
-                    break;
             }
         }
         window.addEventListener('message', onMessage);
