@@ -51,6 +51,7 @@ export default function App() {
     const [current, setCurrent] = useState(start);
     const [end, setEnd] = useState(DURATION);
     const [lastTimeStamp, setLastTimeStamp] = useState(audioCtx.currentTime);
+    const [seeking, setSeeking] = useState(false);
 
     const [currentNode, setCurrentNode] = useState<AudioBufferSourceNode | null>(null);
 
@@ -71,7 +72,7 @@ export default function App() {
     const requestId = useRef<ReturnType<typeof requestAnimationFrame>>();
 
     const animate = () => {
-        if (currentNode && audioCtx.state === 'running') {
+        if (!seeking && currentNode && audioCtx.state === 'running') {
             setCurrent(currentNode.context.currentTime - lastTimeStamp);
         }
         console.log(audioCtx.currentTime, lastTimeStamp);
@@ -85,7 +86,7 @@ export default function App() {
                 cancelAnimationFrame(requestId.current);
             }
         };
-    }, [currentNode, lastTimeStamp]);
+    }, [currentNode, lastTimeStamp, seeking]);
 
     useEffect(() => {
         gain.gain.value = gainValue;
@@ -213,6 +214,15 @@ export default function App() {
             valueLabelDisplay="on"
             valueLabelFormat={(value) => value.toFixed(2)}
             value={current}
+            onMouseDown={() => {
+                setSeeking(true);
+            }}
+            onMouseUp={() => {
+                setSeeking(false);
+            }}
+            onMouseLeave={() => {
+                setSeeking(false);
+            }}
             onChange={(e, value) => {
                 setCurrent(value as number);
                 if (currentNode) {
