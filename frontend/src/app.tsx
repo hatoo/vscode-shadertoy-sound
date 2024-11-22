@@ -47,6 +47,7 @@ export default function App() {
     const [gainValue, setGainValue] = useState(gain.gain.value);
     const [loaded, setLoaded] = useState(false);
     const [autoPlay, setAutoPlay] = useState(false);
+    const [loop, setLoop] = useState(false);
     const [start, setStart] = useState(0);
     const [current, setCurrent] = useState(start);
     const [end, setEnd] = useState(DURATION);
@@ -72,8 +73,13 @@ export default function App() {
     const requestId = useRef<ReturnType<typeof requestAnimationFrame>>();
 
     const animate = () => {
-        if (!seeking && currentNode && audioCtx.state === 'running') {
-            setCurrent(currentNode.context.currentTime - lastTimeStamp);
+        if (!seeking) {
+            if (audioCtx.state === 'running') {
+                setCurrent(audioCtx.currentTime - lastTimeStamp);
+            }
+            if (loop && current > end) {
+                play(start);
+            }
         }
         console.log(audioCtx.currentTime, lastTimeStamp);
         requestId.current = requestAnimationFrame(animate);
@@ -86,7 +92,7 @@ export default function App() {
                 cancelAnimationFrame(requestId.current);
             }
         };
-    }, [currentNode, lastTimeStamp, seeking]);
+    }, [currentNode, lastTimeStamp, seeking, current, end, loop]);
 
     useEffect(() => {
         gain.gain.value = gainValue;
@@ -184,6 +190,10 @@ export default function App() {
             <Checkbox value={autoPlay} onChange={(e) => {
                 setAutoPlay(e.target.checked);
             }} />} label="Auto play" />
+        <FormControlLabel control={
+            <Checkbox value={loop} onChange={(e) => {
+                setLoop(e.target.checked);
+            }} />} label="Loop" />
         <Stack spacing={2} direction="row" sx={{ alignItems: 'center', mb: 1 }}>
             <VolumeDown />
             <Slider aria-label="Volume" min={0.0} max={2.0} step={0.005} valueLabelDisplay="on" value={gainValue} onChange={(e, value) => {
