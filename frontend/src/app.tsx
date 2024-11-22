@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import React, { useEffect, useState } from "react";
-import Checkbox from '@mui/material/Checkbox';
+import { Stack, Checkbox, Slider } from '@mui/material';
+import { VolumeDown, VolumeUp } from '@mui/icons-material';
 
 const fragmentShaderFooter = `
 
@@ -32,6 +33,7 @@ export default function App() {
     const numBlocks = (audioCtx.sampleRate * DURATION) / samples;
     const [audioBuffer, _setAudioBuffer] = useState(() => audioCtx.createBuffer(2, audioCtx.sampleRate * DURATION, audioCtx.sampleRate));
     const [gain, _setGain] = useState(() => audioCtx.createGain());
+    const [gainValue, setGainValue] = useState(gain.gain.value);
     const [loaded, setLoaded] = useState(false);
     const [autoPlay, setAutoPlay] = useState(false);
 
@@ -44,6 +46,10 @@ export default function App() {
     };
 
     gain.connect(audioCtx.destination)
+
+    useEffect(() => {
+        gain.gain.value = gainValue;
+    }, [gainValue]);
 
     useEffect(() => {
         const onShaderError = (
@@ -136,6 +142,13 @@ export default function App() {
         <Checkbox value={autoPlay} onChange={(e) => {
             setAutoPlay(e.target.checked);
         }} />
+        <Stack spacing={2} direction="row" sx={{ alignItems: 'center', mb: 1 }}>
+            <VolumeDown />
+            <Slider aria-label="Volume" min={0.0} max={2.0} step={0.005} marks valueLabelDisplay="on" value={gainValue} onChange={(e, value) => {
+                setGainValue(value as number);
+            }} />
+            <VolumeUp />
+        </Stack>
         <button onClick={() => {
             play();
         }}>Play</button>
