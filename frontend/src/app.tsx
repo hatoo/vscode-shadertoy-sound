@@ -54,12 +54,15 @@ export default function App() {
 
     const [currentNode, setCurrentNode] = useState<AudioBufferSourceNode | null>(null);
 
-    const play = () => {
+    const play = (at: number) => {
+        if (currentNode) {
+            currentNode.stop();
+        }
         const audioBufferSourceNode = audioCtx.createBufferSource();
         audioBufferSourceNode.buffer = audioBuffer;
         audioBufferSourceNode.connect(gain);
-        setLastTimeStamp(audioCtx.currentTime);
-        audioBufferSourceNode.start(0, start, end - start);
+        setLastTimeStamp(audioCtx.currentTime - at);
+        audioBufferSourceNode.start(0, at, end - at);
         audioCtx.resume();
         setCurrentNode(audioBufferSourceNode);
     };
@@ -67,9 +70,8 @@ export default function App() {
     const requestId = useRef<ReturnType<typeof requestAnimationFrame>>();
 
     const animate = () => {
-        console.log('animate');
-        if (currentNode) {
-            setCurrent(start + currentNode.context.currentTime - lastTimeStamp);
+        if (currentNode && audioCtx.state === 'running') {
+            setCurrent(currentNode.context.currentTime - lastTimeStamp);
         }
         requestId.current = requestAnimationFrame(animate);
     };
@@ -81,7 +83,7 @@ export default function App() {
                 cancelAnimationFrame(requestId.current);
             }
         };
-    }, [currentNode]);
+    }, [currentNode, lastTimeStamp]);
 
     useEffect(() => {
         gain.gain.value = gainValue;
@@ -158,7 +160,7 @@ export default function App() {
                     setLoaded(true);
 
                     if (autoPlay) {
-                        play();
+                        play(start);
                     }
 
                     break;
@@ -209,9 +211,17 @@ export default function App() {
             valueLabelDisplay="on"
             valueLabelFormat={(value) => value.toFixed(2)}
             value={current}
+            onChange={(e, value) => {
+                setCurrent(value as number);
+                if (currentNode) {
+                    if (audioCtx.state === 'running') {
+                        play(current);
+                    }
+                }
+            }}
         />
         <button onClick={() => {
-            play();
+            play(current);
         }}>Play</button>
     </>
 }
