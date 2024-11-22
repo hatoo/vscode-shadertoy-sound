@@ -38,6 +38,8 @@ const HEIGHT = 512 // 描画エリア高
 
 const audioCtx = new window.AudioContext()
 const audioBuffer = audioCtx.createBuffer(2, audioCtx.sampleRate * DURATION, audioCtx.sampleRate);
+const gain = audioCtx.createGain()
+gain.connect(audioCtx.destination)
 
 const samples = WIDTH * HEIGHT
 const numBlocks = (audioCtx.sampleRate * DURATION) / samples
@@ -90,10 +92,6 @@ window.addEventListener('message', event => {
                 }
             }
 
-            const audioBufferSourceNode = audioCtx.createBufferSource()
-            audioBufferSourceNode.buffer = audioBuffer // 音を割り当てて
-            audioBufferSourceNode.connect(audioCtx.destination) // 出力先を指定
-            audioBufferSourceNode.start(0) // 再生
             break;
     }
 });
@@ -105,3 +103,16 @@ function initAudioContext() {
     // wake up AudioContext
     audioCtx.resume();
 }
+
+document.getElementById('volume')!.addEventListener('input', event => {
+    gain.gain.value = parseFloat((event.target as HTMLInputElement).value);
+    document.getElementById('value')!.textContent = gain.gain.value.toPrecision(2);
+}, false);
+
+document.getElementById('play')!.addEventListener('click', event => {
+    const audioBufferSourceNode = audioCtx.createBufferSource()
+    audioBufferSourceNode.buffer = audioBuffer // 音を割り当てて
+    audioBufferSourceNode.connect(gain) // 出力先を指定
+    audioBufferSourceNode.start(0) // 再生
+    audioCtx.resume();
+});
