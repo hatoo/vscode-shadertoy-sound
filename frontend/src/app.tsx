@@ -57,14 +57,15 @@ export default function App() {
     const play = (at: number) => {
         if (currentNode) {
             currentNode.stop();
+            setCurrentNode(null);
         }
         const audioBufferSourceNode = audioCtx.createBufferSource();
         audioBufferSourceNode.buffer = audioBuffer;
         audioBufferSourceNode.connect(gain);
-        setLastTimeStamp(audioCtx.currentTime - at);
         audioBufferSourceNode.start(0, at, end - at);
         audioCtx.resume();
         setCurrentNode(audioBufferSourceNode);
+        setLastTimeStamp(audioCtx.currentTime - at);
     };
 
     const requestId = useRef<ReturnType<typeof requestAnimationFrame>>();
@@ -73,6 +74,7 @@ export default function App() {
         if (currentNode && audioCtx.state === 'running') {
             setCurrent(currentNode.context.currentTime - lastTimeStamp);
         }
+        console.log(audioCtx.currentTime, lastTimeStamp);
         requestId.current = requestAnimationFrame(animate);
     };
 
