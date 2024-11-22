@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import React, { useEffect, useState } from "react";
-import { Stack, Checkbox, Slider } from '@mui/material';
+import { Stack, Checkbox, Slider, FormControlLabel } from '@mui/material';
 import { VolumeDown, VolumeUp } from '@mui/icons-material';
 
 const fragmentShaderFooter = `
@@ -140,9 +140,10 @@ export default function App() {
         <h1>Preview</h1>
         <pre>{error}</pre>
         <p>{loaded ? 'Loaded' : 'Loading...'}</p>
-        <Checkbox value={autoPlay} onChange={(e) => {
-            setAutoPlay(e.target.checked);
-        }} />
+        <FormControlLabel control={
+            <Checkbox value={autoPlay} onChange={(e) => {
+                setAutoPlay(e.target.checked);
+            }} />} label="Auto play" />
         <Stack spacing={2} direction="row" sx={{ alignItems: 'center', mb: 1 }}>
             <VolumeDown />
             <Slider aria-label="Volume" min={0.0} max={2.0} step={0.005} marks valueLabelDisplay="on" value={gainValue} onChange={(e, value) => {
