@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Stack, Checkbox, Slider, FormControlLabel, styled } from '@mui/material';
 import { VolumeDown, VolumeUp } from '@mui/icons-material';
 
-const CustomSlider = styled(Slider)(({ theme }) => ({
+const RealtimeSlider = styled(Slider)(({ theme }) => ({
     "& .MuiSlider-thumb": {
         transition: 'none'
     },
@@ -199,7 +199,7 @@ export default function App() {
                 setEnd(Math.max(a, b));
             }}
         />
-        <CustomSlider
+        <RealtimeSlider
             min={start}
             max={end}
             step={0.01}
