@@ -1,19 +1,19 @@
 module.exports = {
     mode: 'development',
 
-    entry: './src/main.ts',
+    entry: './src/main.tsx',
 
     module: {
         rules: [
             {
-                test: /\.ts$/,
+                test: /\.tsx?$/,
                 use: 'ts-loader',
             },
         ],
     },
     resolve: {
         extensions: [
-            '.ts', '.js',
+            '.ts', '.tsx', '.js',
         ],
     },
 };

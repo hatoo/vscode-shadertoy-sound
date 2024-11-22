@@ -1,4 +1,7 @@
 import * as THREE from 'three';
+import App from './app';
+import { createRoot } from 'react-dom/client';
+import React from 'react';
 
 const fragmentShaderFooter = `
 
@@ -116,3 +119,7 @@ document.getElementById('play')!.addEventListener('click', event => {
     audioBufferSourceNode.start(0) // 再生
     audioCtx.resume();
 });
+
+const container = document.getElementById('app')!;
+const root = createRoot(container);
+root.render(<App />);
