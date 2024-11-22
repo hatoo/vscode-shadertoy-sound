@@ -32,6 +32,15 @@ export default function App() {
     const [audioBuffer, _setAudioBuffer] = useState(() => audioCtx.createBuffer(2, audioCtx.sampleRate * DURATION, audioCtx.sampleRate));
     const [gain, _setGain] = useState(() => audioCtx.createGain());
     const [loaded, setLoaded] = useState(false);
+    const [autoPlay, setAutoPlay] = useState(false);
+
+    const play = () => {
+        const audioBufferSourceNode = audioCtx.createBufferSource();
+        audioBufferSourceNode.buffer = audioBuffer;
+        audioBufferSourceNode.connect(gain);
+        audioBufferSourceNode.start(0);
+        audioCtx.resume();
+    };
 
     gain.connect(audioCtx.destination)
 
@@ -105,6 +114,10 @@ export default function App() {
 
                     setLoaded(true);
 
+                    if (autoPlay) {
+                        play();
+                    }
+
                     break;
             }
         }
@@ -119,12 +132,9 @@ export default function App() {
         <h1>Preview</h1>
         <pre>{error}</pre>
         <p>{loaded ? 'Loaded' : 'Loading...'}</p>
+        <input type="checkbox" checked={autoPlay} onChange={(e) => setAutoPlay(e.target.checked)} />
         <button onClick={() => {
-            const audioBufferSourceNode = audioCtx.createBufferSource();
-            audioBufferSourceNode.buffer = audioBuffer;
-            audioBufferSourceNode.connect(gain);
-            audioBufferSourceNode.start(0);
-            audioCtx.resume();
+            play();
         }}>Play</button>
     </>
 }
