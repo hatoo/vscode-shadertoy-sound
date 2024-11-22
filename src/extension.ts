@@ -45,6 +45,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 <body>
 	<h1>HELLO</h1>
+	<pre id="error"></pre>
     <script type="module" src="${mainPath}"></script>
 </body>
 </html>`;
