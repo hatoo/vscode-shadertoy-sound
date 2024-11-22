@@ -78,7 +78,7 @@ export default function App() {
 
     const animate = () => {
         if (!seeking) {
-            if (audioCtx.state === 'running') {
+            if (currentNode && audioCtx.state === 'running') {
                 setCurrent(audioCtx.currentTime - lastTimeStamp);
             }
             if (loop && current > end) {
@@ -250,5 +250,14 @@ export default function App() {
         <button onClick={() => {
             play(current);
         }}>Play</button>
+        <button onClick={() => {
+            if (currentNode) {
+                currentNode.stop();
+                setCurrentNode(null);
+            }
+        }}>Stop</button>
+        <button onClick={() => {
+            play(start);
+        }}>Restart</button>
     </>
 }
