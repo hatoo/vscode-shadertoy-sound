@@ -24,6 +24,7 @@ const WIDTH = 512 // 描画エリア幅
 const HEIGHT = 512 // 描画エリア高
 
 const audioCtx = new window.AudioContext()
+const audioBuffer = audioCtx.createBuffer(2, audioCtx.sampleRate * DURATION, audioCtx.sampleRate);
 
 const samples = WIDTH * HEIGHT
 const numBlocks = (audioCtx.sampleRate * DURATION) / samples
@@ -83,8 +84,6 @@ window.addEventListener('message', event => {
     const message = event.data; // The JSON data our extension sent
     switch (message.command) {
         case 'setShader':
-            const audioBufferSourceNode = audioCtx.createBufferSource()
-            const audioBuffer = audioCtx.createBuffer(2, audioCtx.sampleRate * DURATION, audioCtx.sampleRate);
             const scene = new THREE.Scene();
             const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 10);
             camera.position.set(0, 0, 1);
@@ -128,6 +127,7 @@ window.addEventListener('message', event => {
                 }
             }
 
+            const audioBufferSourceNode = audioCtx.createBufferSource()
             audioBufferSourceNode.buffer = audioBuffer // 音を割り当てて
             audioBufferSourceNode.connect(audioCtx.destination) // 出力先を指定
             audioBufferSourceNode.start(0) // 再生
