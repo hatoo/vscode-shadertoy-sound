@@ -19,7 +19,7 @@ export function activate(context: vscode.ExtensionContext) {
 		// Display a message box to the user
 		vscode.window.showInformationMessage('Hello World from shadertoy-sound!');
 
-		const shader = vscode.window.activeTextEditor?.document.getText();
+		let shader = vscode.window.activeTextEditor?.document.getText();
 		if (currentPanel === undefined) {
 			currentPanel = vscode.window.createWebviewPanel('preview',
 				'shadertoy sound preview',
@@ -33,7 +33,10 @@ export function activate(context: vscode.ExtensionContext) {
 			currentPanel.webview.onDidReceiveMessage(message => {
 				switch (message.command) {
 					case 'loaded':
-						currentPanel?.webview.postMessage({ command: 'setShader', shader: shader });
+						if (shader) {
+							currentPanel?.webview.postMessage({ command: 'setShader', shader: shader });
+						}
+						shader = undefined;
 						break;
 				}
 			});
