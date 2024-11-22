@@ -53,19 +53,6 @@ export default function App() {
     }, [renderer]);
 
     useEffect(() => {
-        const eventName = typeof document.ontouchend !== 'undefined' ? 'touchend' : 'mouseup';
-        function initAudioContext() {
-            document.removeEventListener(eventName, initAudioContext);
-            // wake up AudioContext
-            audioCtx.resume();
-        }
-        document.addEventListener(eventName, initAudioContext);
-        () => {
-            document.removeEventListener(eventName, initAudioContext);
-        }
-    }, [audioCtx]);
-
-    useEffect(() => {
         const onMessage = (event: MessageEvent<any>) => {
             console.log(event.data);
             const message = event.data; // The JSON data our extension sent

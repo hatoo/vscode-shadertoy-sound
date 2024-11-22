@@ -1,4 +1,3 @@
-import * as THREE from 'three';
 import App from './app';
 import { createRoot } from 'react-dom/client';
 import React from 'react';
