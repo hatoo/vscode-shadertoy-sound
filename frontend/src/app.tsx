@@ -16,10 +16,10 @@ const fragmentShaderFooter = `
     }
 `;
 
-const DURATION = 180 // 再生秒数
+const DURATION = 180
 
-const WIDTH = 512 // 描画エリア幅
-const HEIGHT = 512 // 描画エリア高
+const WIDTH = 512
+const HEIGHT = 512
 const samples = WIDTH * HEIGHT
 
 const vscode = acquireVsCodeApi();
@@ -58,6 +58,7 @@ export default function App() {
             const message = event.data; // The JSON data our extension sent
             switch (message.command) {
                 case 'setShader':
+                    // Codes are heavily inspired from https://design.dena.com/engineering/soundshader
                     setError('');
                     const scene = new THREE.Scene();
                     const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 10);
@@ -77,7 +78,7 @@ export default function App() {
 
                     const material = new THREE.ShaderMaterial({
                         uniforms: uniforms,
-                        fragmentShader: '#line 1 1\n' + message.shader + fragmentShaderFooter // fragmentShader,
+                        fragmentShader: '#line 1 1\n' + message.shader + fragmentShaderFooter
                     });
                     const mesh = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material);
                     scene.add(mesh);
@@ -87,15 +88,15 @@ export default function App() {
                     const renderCtx = renderer.getContext()
 
                     for (let i = 0; i < numBlocks; i++) {
-                        uniforms.blockOffset.value = i * samples / audioCtx.sampleRate // シェーダーに数値の割り当て
-                        renderer.setRenderTarget(target) // オフスクリーンレンダリング 
+                        uniforms.blockOffset.value = i * samples / audioCtx.sampleRate
+                        renderer.setRenderTarget(target)
                         renderer.render(scene, camera)
 
                         const pixels = new Uint8Array(WIDTH * HEIGHT * 4)
-                        renderCtx.readPixels(0, 0, WIDTH, HEIGHT, renderCtx.RGBA, renderCtx.UNSIGNED_BYTE, pixels)  // 描画結果を取得
+                        renderCtx.readPixels(0, 0, WIDTH, HEIGHT, renderCtx.RGBA, renderCtx.UNSIGNED_BYTE, pixels)
 
-                        const outputDataL = audioBuffer.getChannelData(0) // 音声左チャンネル割り当て
-                        const outputDataR = audioBuffer.getChannelData(1) // 音声右チャンネル割り当て
+                        const outputDataL = audioBuffer.getChannelData(0)
+                        const outputDataR = audioBuffer.getChannelData(1)
                         for (let j = 0; j < samples; j++) {
                             outputDataL[i * samples + j] = (pixels[j * 4 + 0] + 256 * pixels[j * 4 + 1]) / 65535 * 2 - 1
                             outputDataR[i * samples + j] = (pixels[j * 4 + 2] + 256 * pixels[j * 4 + 3]) / 65535 * 2 - 1
