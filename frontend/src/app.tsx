@@ -22,6 +22,8 @@ const WIDTH = 512 // 描画エリア幅
 const HEIGHT = 512 // 描画エリア高
 const samples = WIDTH * HEIGHT
 
+const vscode = acquireVsCodeApi();
+
 export default function App() {
     const [error, setError] = useState('');
     const [renderer, _setRenderer] = useState(() => new THREE.WebGLRenderer());
@@ -29,6 +31,7 @@ export default function App() {
     const numBlocks = (audioCtx.sampleRate * DURATION) / samples;
     const [audioBuffer, _setAudioBuffer] = useState(() => audioCtx.createBuffer(2, audioCtx.sampleRate * DURATION, audioCtx.sampleRate));
     const [gain, _setGain] = useState(() => audioCtx.createGain());
+    const [loaded, setLoaded] = useState(false);
 
     gain.connect(audioCtx.destination)
 
@@ -112,18 +115,22 @@ export default function App() {
                         }
                     }
 
+                    setLoaded(true);
+
                     break;
             }
         }
         window.addEventListener('message', onMessage);
-        acquireVsCodeApi().postMessage({ command: 'loaded' });
+        vscode.postMessage({ command: 'loaded' });
         () => {
             window.removeEventListener('message', onMessage);
         }
     });
 
     return <>
+        <h1>Preview</h1>
         <pre>{error}</pre>
+        <p>{loaded ? 'Loaded' : 'Loading...'}</p>
         <button onClick={() => {
             const audioBufferSourceNode = audioCtx.createBufferSource();
             audioBufferSourceNode.buffer = audioBuffer;
