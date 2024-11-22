@@ -18,7 +18,7 @@ const fragmentShaderFooter = `
 
 const renderer = new THREE.WebGLRenderer();
 
-const DURATION = 6 // 再生秒数
+const DURATION = 180 // 再生秒数
 
 const WIDTH = 512 // 描画エリア幅
 const HEIGHT = 512 // 描画エリア高

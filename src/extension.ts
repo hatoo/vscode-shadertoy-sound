@@ -56,7 +56,7 @@ export function activate(context: vscode.ExtensionContext) {
 				context.subscriptions
 			);
 		} else {
-			currentPanel.reveal();
+			currentPanel.reveal(undefined, true);
 		}
 
 		const shader = vscode.window.activeTextEditor?.document.getText();
