@@ -116,6 +116,7 @@ export default function App() {
             }
         }
         window.addEventListener('message', onMessage);
+        acquireVsCodeApi().postMessage({ command: 'loaded' });
         () => {
             window.removeEventListener('message', onMessage);
         }
