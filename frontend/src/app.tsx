@@ -39,6 +39,7 @@ const renderer = new THREE.WebGLRenderer();
 const audioCtx = new window.AudioContext();
 const audioBuffer = audioCtx.createBuffer(2, audioCtx.sampleRate * DURATION, audioCtx.sampleRate);
 const gain = audioCtx.createGain();
+gain.gain.value = 0.5;
 gain.connect(audioCtx.destination);
 
 export default function App() {
@@ -68,6 +69,9 @@ export default function App() {
         audioCtx.resume();
         setCurrentNode(audioBufferSourceNode);
         setLastTimeStamp(audioCtx.currentTime - at);
+        // Avoid click noise
+        gain.gain.value = 0;
+        gain.gain.exponentialRampToValueAtTime(gainValue, audioCtx.currentTime + 0.04);
     };
 
     const requestId = useRef<ReturnType<typeof requestAnimationFrame>>();
@@ -196,7 +200,7 @@ export default function App() {
             }} />} label="Loop" />
         <Stack spacing={2} direction="row" sx={{ alignItems: 'center', mb: 1 }}>
             <VolumeDown />
-            <Slider aria-label="Volume" min={0.0} max={2.0} step={0.005} valueLabelDisplay="on" value={gainValue} onChange={(e, value) => {
+            <Slider aria-label="Volume" min={0.0} max={1.0} step={0.005} valueLabelDisplay="on" value={gainValue} onChange={(e, value) => {
                 setGainValue(value as number);
             }} />
             <VolumeUp />
@@ -221,7 +225,7 @@ export default function App() {
             min={start}
             max={end}
             step={0.01}
-            valueLabelDisplay="on"
+            valueLabelDisplay="off"
             valueLabelFormat={(value) => value.toFixed(2)}
             value={current}
             onMouseDown={() => {
@@ -242,6 +246,7 @@ export default function App() {
                 }
             }}
         />
+        <Typography>{current.toFixed(2)}</Typography>
         <button onClick={() => {
             play(current);
         }}>Play</button>
