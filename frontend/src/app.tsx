@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { Stack, Checkbox, Slider, FormControlLabel, styled } from '@mui/material';
+import React, { useEffect, useRef, useState } from "react";
+import { Stack, Checkbox, Slider, FormControlLabel, styled, Typography } from '@mui/material';
 import { VolumeDown, VolumeUp } from '@mui/icons-material';
 
 const RealtimeSlider = styled(Slider)(({ theme }) => ({
@@ -181,24 +181,27 @@ export default function App() {
             }} />} label="Auto play" />
         <Stack spacing={2} direction="row" sx={{ alignItems: 'center', mb: 1 }}>
             <VolumeDown />
-            <Slider aria-label="Volume" min={0.0} max={2.0} step={0.005} marks valueLabelDisplay="on" value={gainValue} onChange={(e, value) => {
+            <Slider aria-label="Volume" min={0.0} max={2.0} step={0.005} valueLabelDisplay="on" value={gainValue} onChange={(e, value) => {
                 setGainValue(value as number);
             }} />
             <VolumeUp />
         </Stack>
-        <Slider
-            min={0}
-            max={DURATION}
-            step={0.1}
-            valueLabelDisplay="on"
-            value={[start, end]}
-            onChange={(e, value) => {
-                const [a, b] = value as [number, number];
-
-                setStart(Math.min(a, b));
-                setEnd(Math.max(a, b));
-            }}
-        />
+        <Stack spacing={2} direction="row" sx={{ alignItems: 'center', mb: 1 }}>
+            <Typography>Start: {start.toFixed(2)}</Typography>
+            <Slider
+                min={0}
+                max={DURATION}
+                step={0.1}
+                valueLabelDisplay="off"
+                value={[start, end]}
+                onChange={(e, value) => {
+                    const [a, b] = value as [number, number];
+                    setStart(Math.min(a, b));
+                    setEnd(Math.max(a, b));
+                }}
+            />
+            <Typography>End: {end.toFixed(2)}</Typography>
+        </Stack>
         <RealtimeSlider
             min={start}
             max={end}
