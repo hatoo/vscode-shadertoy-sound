@@ -26,13 +26,14 @@ const samples = WIDTH * HEIGHT
 
 const vscode = acquireVsCodeApi();
 
+const renderer = new THREE.WebGLRenderer();
+const audioCtx = new window.AudioContext();
+const audioBuffer = audioCtx.createBuffer(2, audioCtx.sampleRate * DURATION, audioCtx.sampleRate);
+const gain = audioCtx.createGain();
+
 export default function App() {
     const [error, setError] = useState('');
-    const [renderer, _setRenderer] = useState(() => new THREE.WebGLRenderer());
-    const [audioCtx, _setAudioCtx] = useState(() => new window.AudioContext());
     const numBlocks = (audioCtx.sampleRate * DURATION) / samples;
-    const [audioBuffer, _setAudioBuffer] = useState(() => audioCtx.createBuffer(2, audioCtx.sampleRate * DURATION, audioCtx.sampleRate));
-    const [gain, _setGain] = useState(() => audioCtx.createGain());
     const [gainValue, setGainValue] = useState(gain.gain.value);
     const [loaded, setLoaded] = useState(false);
     const [autoPlay, setAutoPlay] = useState(false);
@@ -66,7 +67,7 @@ export default function App() {
         return () => {
             renderer.debug.onShaderError = null;
         };
-    }, [renderer]);
+    }, []);
 
     useEffect(() => {
         const onMessage = (event: MessageEvent<any>) => {
