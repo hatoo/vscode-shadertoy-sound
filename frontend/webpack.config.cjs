@@ -9,11 +9,15 @@ module.exports = {
                 test: /\.tsx?$/,
                 use: 'ts-loader',
             },
+            {
+                test: /\.css$/,
+                use: 'css-loader',
+            },
         ],
     },
     resolve: {
         extensions: [
-            '.ts', '.tsx', '.js',
+            '.ts', '.tsx', '.js', '.css',
         ],
     },
 };

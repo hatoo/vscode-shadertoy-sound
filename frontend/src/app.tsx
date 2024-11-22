@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import React, { useEffect, useState } from "react";
+import Checkbox from '@mui/material/Checkbox';
 
 const fragmentShaderFooter = `
 
@@ -56,9 +57,9 @@ export default function App() {
             setError(info);
         };
         renderer.debug.onShaderError = onShaderError;
-        () => {
+        return () => {
             renderer.debug.onShaderError = null;
-        }
+        };
     }, [renderer]);
 
     useEffect(() => {
@@ -123,16 +124,18 @@ export default function App() {
         }
         window.addEventListener('message', onMessage);
         vscode.postMessage({ command: 'loaded' });
-        () => {
+        return () => {
             window.removeEventListener('message', onMessage);
-        }
+        };
     });
 
     return <>
         <h1>Preview</h1>
         <pre>{error}</pre>
         <p>{loaded ? 'Loaded' : 'Loading...'}</p>
-        <input type="checkbox" checked={autoPlay} onChange={(e) => setAutoPlay(e.target.checked)} />
+        <Checkbox value={autoPlay} onChange={(e) => {
+            setAutoPlay(e.target.checked);
+        }} />
         <button onClick={() => {
             play();
         }}>Play</button>
