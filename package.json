@@ -15,11 +15,13 @@
     "commands": [
       {
         "command": "shadertoy-sound.preview",
-        "title": "Shadertoy-sound: Preview"
+        "title": "Preview",
+        "category": "Shadertoy-sound"
       },
       {
         "command": "shadertoy-sound.dispose",
-        "title": "Shadertoy-sound: Dispose Preview"
+        "title": "Dispose Preview",
+        "category": "Shadertoy-sound"
       }
     ]
   },
