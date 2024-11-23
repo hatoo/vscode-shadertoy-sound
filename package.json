@@ -16,6 +16,10 @@
       {
         "command": "shadertoy-sound.preview",
         "title": "Shadertoy-sound: Preview"
+      },
+      {
+        "command": "shadertoy-sound.dispose",
+        "title": "Shadertoy-sound: Dispose Preview"
       }
     ]
   },
