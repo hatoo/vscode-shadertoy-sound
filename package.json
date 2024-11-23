@@ -29,12 +29,12 @@
       {
         "command": "shadertoy-sound.preview",
         "title": "Preview",
-        "category": "Shadertoy-sound"
+        "category": "ShaderToy-Sound"
       },
       {
         "command": "shadertoy-sound.dispose",
         "title": "Dispose Preview",
-        "category": "Shadertoy-sound"
+        "category": "ShaderToy-Sound"
       }
     ]
   },
