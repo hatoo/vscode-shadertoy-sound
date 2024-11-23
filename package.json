@@ -1,8 +1,21 @@
 {
   "name": "shadertoy-sound",
-  "displayName": "shadertoy-sound",
-  "description": "",
   "version": "0.0.1",
+  "author": "hatoo",
+  "publisher": "hatookov",
+  "license": "MIT",
+  "displayName": "shadertoy-sound",
+  "description": "Preview ShaderToy sound shader",
+  "keywords": [
+    "shadertoy",
+    "shader",
+    "glsl",
+    "sound"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hatoo/vscode-shadertoy-sound.git"
+  },
   "engines": {
     "vscode": "^1.95.0"
   },
