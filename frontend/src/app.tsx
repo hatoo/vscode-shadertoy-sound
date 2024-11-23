@@ -78,11 +78,13 @@ export default function App() {
 
     const animate = () => {
         if (!seeking) {
+            const new_current = audioCtx.currentTime - lastTimeStamp;
             if (currentNode && audioCtx.state === 'running') {
-                setCurrent(audioCtx.currentTime - lastTimeStamp);
-            }
-            if (loop && current > end) {
-                play(start);
+                if (loop && new_current > end) {
+                    play(start);
+                } else if (new_current <= end) {
+                    setCurrent(new_current);
+                }
             }
         }
         console.log(audioCtx.currentTime, lastTimeStamp);
