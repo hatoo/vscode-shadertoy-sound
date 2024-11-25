@@ -219,6 +219,7 @@ export default function App() {
             <Slider
                 min={0}
                 max={DURATION}
+                size='small'
                 step={0.1}
                 valueLabelDisplay="off"
                 value={[start, end]}
