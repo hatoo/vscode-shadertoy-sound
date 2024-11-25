@@ -57,11 +57,16 @@ export default function App() {
 
     const [currentNode, setCurrentNode] = useState<AudioBufferSourceNode | null>(null);
 
-    const play = (at: number) => {
+    const stop = () => {
         if (currentNode) {
             currentNode.stop();
+            currentNode.disconnect();
             setCurrentNode(null);
         }
+    };
+
+    const play = (at: number) => {
+        stop();
         const audioBufferSourceNode = audioCtx.createBufferSource();
         audioBufferSourceNode.buffer = audioBuffer;
         audioBufferSourceNode.connect(gain);
@@ -255,10 +260,7 @@ export default function App() {
             play(current);
         }}>Play</button>
         <button onClick={() => {
-            if (currentNode) {
-                currentNode.stop();
-                setCurrentNode(null);
-            }
+            stop();
         }}>Stop</button>
         <button onClick={() => {
             play(start);
