@@ -2,6 +2,8 @@
 
 With this extension you can run your Shadertoy sound shaders in Visual Studio Code with sound player UI.
 
+[Visual Studio Code Marketplace](https://marketplace.visualstudio.com/items?itemName=hatookov.shadertoy-sound)
+
 ## Commands
 
 - `ShaderToy-Sound: Preview` - Run the current sound shader. I highly recommend to add a keybinding for this command.
