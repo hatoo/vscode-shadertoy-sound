@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "type": "module",
   "scripts": {
-    "compile": "webpack",
+    "build": "bun build src/main.js --outdir ./out",
     "watch": "tsc -watch -p ./",
     "pretest": "npm run compile && npm run lint",
     "lint": "eslint src",
@@ -34,8 +34,6 @@
     "globals": "^15.12.0",
     "ts-loader": "^9.5.1",
     "typescript": "^5.6.3",
-    "typescript-eslint": "^8.15.0",
-    "webpack": "^5.96.1",
-    "webpack-cli": "^5.1.4"
+    "typescript-eslint": "^8.15.0"
   }
 }

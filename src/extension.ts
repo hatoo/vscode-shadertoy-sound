@@ -26,10 +26,10 @@ export function activate(context: vscode.ExtensionContext) {
 				vscode.ViewColumn.Two,
 				{
 					enableScripts: true,
-					localResourceRoots: [vscode.Uri.joinPath(context.extensionUri, 'frontend', 'dist')]
+					localResourceRoots: [vscode.Uri.joinPath(context.extensionUri, 'frontend', 'out')]
 				}
 			);
-			const mainPath = currentPanel.webview.asWebviewUri(vscode.Uri.joinPath(context.extensionUri, 'frontend', 'dist', 'main.js'));
+			const mainPath = currentPanel.webview.asWebviewUri(vscode.Uri.joinPath(context.extensionUri, 'frontend', 'out', 'main.js'));
 			currentPanel.webview.onDidReceiveMessage(message => {
 				switch (message.command) {
 					case 'loaded':
