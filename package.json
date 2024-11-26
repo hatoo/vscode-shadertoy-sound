@@ -39,8 +39,8 @@
     ]
   },
   "scripts": {
-    "vscode:prepublish": "bun run compile && cd frontend && bun run build",
-    "compile": "tsc -p ./",
+    "vscode:prepublish": "bun run build && cd frontend && bun run build",
+    "build": "tsc -p ./",
     "watch": "tsc -watch -p ./",
     "pretest": "npm run compile && npm run lint",
     "lint": "eslint src",
