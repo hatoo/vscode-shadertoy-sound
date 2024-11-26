@@ -76,6 +76,7 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 
 	context.subscriptions.push(preview);
+	context.subscriptions.push(disposeWebview);
 }
 
 // This method is called when your extension is deactivated
